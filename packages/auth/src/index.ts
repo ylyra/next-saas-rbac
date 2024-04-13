@@ -3,6 +3,10 @@ import { User } from './models/user';
 import { permissions } from './permissions';
 import { AppAbility } from './subjects';
 
+export * from './models/organization';
+export * from './models/project';
+export * from './models/user';
+
 export const createAppAbility = createMongoAbility as CreateAbility<AppAbility>;
 
 export function defineAbilitiesFor(user: User) {

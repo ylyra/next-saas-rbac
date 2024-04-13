@@ -4,7 +4,6 @@ import { organizationSchema } from "../models/organization"
 export const organizationSubject = z.tuple([
   z.enum([
     'manage',
-    'create',
     'update',
     'delete',
     'transfer_ownership',
