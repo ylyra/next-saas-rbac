@@ -10,7 +10,7 @@
     "@saas/auth": "workspace:*"
   },
   "devDependencies": {
-    "@saas/eslint": "workspace:*",
+    "@saas/eslint-config": "workspace:*",
     "@saas/prettier": "workspace:*",
     "@saas/tsconfig": "workspace:*",
     "@types/node": "^20.12.7",
@@ -18,7 +18,7 @@
   },
   "eslintConfig": {
     "extends": [
-      "@saas/eslint/node"
+      "@saas/eslint-config/node"
     ]
   },
   "prettier": "@saas/prettier"

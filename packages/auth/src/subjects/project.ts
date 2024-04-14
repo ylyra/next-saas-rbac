@@ -1,5 +1,6 @@
-import { z } from "zod"
-import { projectSchema } from "../models/project"
+import { z } from 'zod'
+
+import { projectSchema } from '../models/project'
 
 export const projectSubject = z.tuple([
   z.enum(['get', 'create', 'update', 'delete', 'manage']),

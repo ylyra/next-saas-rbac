@@ -1,13 +1,18 @@
-import { AbilityBuilder, CreateAbility, createMongoAbility } from '@casl/ability';
-import { User } from './models/user';
-import { permissions } from './permissions';
-import { AppAbility } from './subjects';
+import {
+  AbilityBuilder,
+  CreateAbility,
+  createMongoAbility,
+} from '@casl/ability'
 
-export * from './models/organization';
-export * from './models/project';
-export * from './models/user';
+import { User } from './models/user'
+import { permissions } from './permissions'
+import { AppAbility } from './subjects'
 
-export const createAppAbility = createMongoAbility as CreateAbility<AppAbility>;
+export * from './models/organization'
+export * from './models/project'
+export * from './models/user'
+
+export const createAppAbility = createMongoAbility as CreateAbility<AppAbility>
 
 export function defineAbilitiesFor(user: User) {
   const builder = new AbilityBuilder(createAppAbility)
@@ -16,13 +21,13 @@ export function defineAbilitiesFor(user: User) {
     throw new Error(`Undefined permissions for role ${user.role}`)
   }
 
-  permissions[user.role](user, builder);
+  permissions[user.role](user, builder)
 
   const abilities = builder.build({
     detectSubjectType(subject) {
       return subject.__typename
     },
-  });
+  })
 
-  return abilities;
+  return abilities
 }
