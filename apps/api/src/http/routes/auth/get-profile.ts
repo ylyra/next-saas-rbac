@@ -32,6 +32,11 @@ export async function authGetProfile(app: FastifyInstance) {
               message: z.string(),
             }),
           },
+          security: [
+            {
+              bearerAuth: [],
+            },
+          ],
         },
       },
       async (request, reply) => {

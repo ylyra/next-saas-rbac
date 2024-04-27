@@ -2,6 +2,7 @@ import fastifyCors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUi from '@fastify/swagger-ui'
+import { env } from '@saas/env'
 import { fastify } from 'fastify'
 import {
   jsonSchemaTransform,
@@ -9,8 +10,6 @@ import {
   validatorCompiler,
   ZodTypeProvider,
 } from 'fastify-type-provider-zod'
-
-import { envFastity } from '@/lib/env'
 
 import { errorHandler } from './error-handler'
 import { authAuthenticateWithPassword } from './routes/auth/authenticate-with-password'
@@ -32,7 +31,15 @@ app.register(fastifySwagger, {
       description: 'Full-stack Saas app with multi-tenant & RBAC',
       version: '1.0.0',
     },
-    servers: [],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
   },
   transform: jsonSchemaTransform,
 })
@@ -43,9 +50,8 @@ app.register(fastifySwaggerUi, {
 
 app.register(fastifyCors)
 app.register(fastifyJwt, {
-  secret: 'my-jwt-secret',
+  secret: env.JWT_SECRET,
 })
-app.register(envFastity)
 
 app.register(authGetProfile)
 app.register(authCreateAccount)
@@ -53,6 +59,6 @@ app.register(authAuthenticateWithPassword)
 app.register(authRequestPasswordRecover)
 app.register(authResetPassword)
 
-app.listen({ port: 3333 }).then(() => {
+app.listen({ port: env.SERVER_PORT }).then(() => {
   console.log('Server is running on http://localhost:3333')
 })
