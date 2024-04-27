@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { roleSchema } from '../roles'
 
 const userSchema = z.object({
-  id: z.string(),
+  id: z.string().cuid(),
   role: roleSchema,
 })
 

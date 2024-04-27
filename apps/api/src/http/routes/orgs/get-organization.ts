@@ -1,4 +1,3 @@
-import { roleSchema } from '@saas/auth'
 import type { FastifyInstance } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import z from 'zod'
@@ -8,20 +7,16 @@ import { createRoute } from '@/utils/create-route'
 
 import { ORGANIZATIONS_ROUTE_PREFIX, ORGANIZATIONS_TAGS } from '.'
 
-export async function orgsGetMembership(app: FastifyInstance) {
+export async function orgsGetOrganization(app: FastifyInstance) {
   app
     .withTypeProvider<ZodTypeProvider>()
     .register(auth)
     .get(
-      createRoute(
-        ORGANIZATIONS_ROUTE_PREFIX,
-        ':organizationSlug',
-        'membership',
-      ),
+      createRoute(ORGANIZATIONS_ROUTE_PREFIX, ':organizationSlug'),
       {
         schema: {
           tags: ORGANIZATIONS_TAGS,
-          summary: 'Get the current user membership in an organization',
+          summary: 'Get an organization',
           security: [
             {
               bearerAuth: [],
@@ -32,10 +27,16 @@ export async function orgsGetMembership(app: FastifyInstance) {
           }),
           response: {
             200: z.object({
-              membership: z.object({
+              organization: z.object({
                 id: z.string().cuid(),
-                role: roleSchema,
-                organizationId: z.string().cuid(),
+                name: z.string(),
+                slug: z.string(),
+                domain: z.string().nullable(),
+                shouldAttachUsersByDomain: z.boolean(),
+                avatarUrl: z.string().url().nullable(),
+                ownerId: z.string().cuid(),
+                createdAt: z.date(),
+                updatedAt: z.date(),
               }),
             }),
           },
@@ -44,14 +45,11 @@ export async function orgsGetMembership(app: FastifyInstance) {
       async (request) => {
         const { organizationSlug } = request.params
 
-        const { membership } = await request.getUserMembership(organizationSlug)
+        const { organization } =
+          await request.getUserMembership(organizationSlug)
 
         return {
-          membership: {
-            id: membership.id,
-            role: membership.role,
-            organizationId: membership.organizationId,
-          },
+          organization,
         }
       },
     )

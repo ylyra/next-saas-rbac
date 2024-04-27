@@ -27,7 +27,7 @@ export async function orgsCreateOrganization(app: FastifyInstance) {
           }),
           response: {
             200: z.object({
-              organizationId: z.string(),
+              organizationId: z.string().cuid(),
               slug: z.string(),
             }),
             400: z.object({
