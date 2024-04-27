@@ -10,6 +10,8 @@ import {
   ZodTypeProvider,
 } from 'fastify-type-provider-zod'
 
+import { envFastity } from '@/lib/env'
+
 import { errorHandler } from './error-handler'
 import { authAuthenticateWithPassword } from './routes/auth/authenticate-with-password'
 import { authCreateAccount } from './routes/auth/create-account'
@@ -43,6 +45,7 @@ app.register(fastifyCors)
 app.register(fastifyJwt, {
   secret: 'my-jwt-secret',
 })
+app.register(envFastity)
 
 app.register(authGetProfile)
 app.register(authCreateAccount)
