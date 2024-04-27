@@ -12,6 +12,7 @@ import {
 
 import { authAuthenticateWithPassword } from './routes/auth/authenticate-with-password'
 import { authCreateAccount } from './routes/auth/create-account'
+import { authGetProfile } from './routes/auth/get-profile'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -41,6 +42,7 @@ app.register(fastifyJwt, {
 
 app.register(authCreateAccount)
 app.register(authAuthenticateWithPassword)
+app.register(authGetProfile)
 
 app.listen({ port: 3333 }).then(() => {
   console.log('Server is running on http://localhost:3333')
