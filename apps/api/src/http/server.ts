@@ -14,6 +14,8 @@ import { errorHandler } from './error-handler'
 import { authAuthenticateWithPassword } from './routes/auth/authenticate-with-password'
 import { authCreateAccount } from './routes/auth/create-account'
 import { authGetProfile } from './routes/auth/get-profile'
+import { authRequestPasswordRecover } from './routes/auth/request-password-recover'
+import { authResetPassword } from './routes/auth/reset-password'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -42,9 +44,11 @@ app.register(fastifyJwt, {
   secret: 'my-jwt-secret',
 })
 
+app.register(authGetProfile)
 app.register(authCreateAccount)
 app.register(authAuthenticateWithPassword)
-app.register(authGetProfile)
+app.register(authRequestPasswordRecover)
+app.register(authResetPassword)
 
 app.listen({ port: 3333 }).then(() => {
   console.log('Server is running on http://localhost:3333')

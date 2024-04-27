@@ -3,7 +3,7 @@ import type { FastifyInstance } from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import z from 'zod'
 
-import { primsa } from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 import { createRoute } from '@/utils/create-route'
 
 import { BadRequestError } from '../_errors/bad-request-error'
@@ -33,7 +33,7 @@ export async function authAuthenticateWithPassword(app: FastifyInstance) {
     async (request, reply) => {
       const { email, password } = request.body
 
-      const userWithSameEmail = await primsa.user.findUnique({
+      const userWithSameEmail = await prisma.user.findUnique({
         where: {
           email,
         },
