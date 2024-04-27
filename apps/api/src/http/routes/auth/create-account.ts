@@ -6,13 +6,15 @@ import z from 'zod'
 import { primsa } from '@/lib/prisma'
 import { createRoute } from '@/utils/create-route'
 
-import { AUTH_ROUTE_PREFIX } from '.'
+import { AUTH_ROUTE_PREFIX, AUTH_TAGS } from '.'
 
 export async function authCreateAccount(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().post(
     createRoute(AUTH_ROUTE_PREFIX),
     {
       schema: {
+        tags: AUTH_TAGS,
+        summary: 'Create a new account with email and password',
         body: z.object({
           name: z.string(),
           email: z.string().email(),
