@@ -5,6 +5,7 @@ import z from 'zod'
 import { primsa } from '@/lib/prisma'
 import { createRoute } from '@/utils/create-route'
 
+import { BadRequestError } from '../_errors/bad-request-error'
 import { AUTH_ROUTE_PREFIX, AUTH_TAGS } from '.'
 
 export async function authGetProfile(app: FastifyInstance) {
@@ -45,9 +46,7 @@ export async function authGetProfile(app: FastifyInstance) {
       })
 
       if (!userWithSameEmail) {
-        return reply.status(400).send({
-          message: 'User not found',
-        })
+        throw new BadRequestError('User not found')
       }
 
       return reply.send({ user: userWithSameEmail })

@@ -6,6 +6,7 @@ import z from 'zod'
 import { primsa } from '@/lib/prisma'
 import { createRoute } from '@/utils/create-route'
 
+import { BadRequestError } from '../_errors/bad-request-error'
 import { AUTH_ROUTE_PREFIX, AUTH_TAGS } from '.'
 
 export async function authAuthenticateWithPassword(app: FastifyInstance) {
@@ -39,16 +40,13 @@ export async function authAuthenticateWithPassword(app: FastifyInstance) {
       })
 
       if (!userWithSameEmail) {
-        return reply.status(400).send({
-          message: 'Invalid Credentials',
-        })
+        throw new BadRequestError('Invalid Credentials')
       }
 
       if (!userWithSameEmail.passwordHash) {
-        return reply.status(400).send({
-          message:
-            'User does not have a password, please sign in with social login',
-        })
+        throw new BadRequestError(
+          'User does not have a password, please sign in with social login',
+        )
       }
 
       const isPasswordCorrect = await compare(
@@ -57,9 +55,7 @@ export async function authAuthenticateWithPassword(app: FastifyInstance) {
       )
 
       if (!isPasswordCorrect) {
-        return reply.status(400).send({
-          message: 'Invalid Credentials',
-        })
+        throw new BadRequestError('Invalid Credentials')
       }
 
       const token = await reply.jwtSign(

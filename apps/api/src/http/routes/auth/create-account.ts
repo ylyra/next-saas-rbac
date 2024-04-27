@@ -6,6 +6,7 @@ import z from 'zod'
 import { primsa } from '@/lib/prisma'
 import { createRoute } from '@/utils/create-route'
 
+import { BadRequestError } from '../_errors/bad-request-error'
 import { AUTH_ROUTE_PREFIX, AUTH_TAGS } from '.'
 
 export async function authCreateAccount(app: FastifyInstance) {
@@ -40,9 +41,7 @@ export async function authCreateAccount(app: FastifyInstance) {
       })
 
       if (userWithSameEmail) {
-        return reply.status(400).send({
-          message: 'User with this email already exists',
-        })
+        throw new BadRequestError('User with this email already exists')
       }
 
       const [, domain] = email.split('@')
