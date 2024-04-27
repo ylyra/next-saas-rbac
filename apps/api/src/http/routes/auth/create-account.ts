@@ -37,6 +37,15 @@ export async function authCreateAccount(app: FastifyInstance) {
         })
       }
 
+      const [, domain] = email.split('@')
+
+      const autoJoinOrganization = await primsa.organization.findFirst({
+        where: {
+          domain,
+          shouldAttachUsersByDomain: true,
+        },
+      })
+
       const passwordHash = await hash(password, 6)
 
       await primsa.user.create({
@@ -44,6 +53,14 @@ export async function authCreateAccount(app: FastifyInstance) {
           email,
           name,
           passwordHash,
+
+          member_on: autoJoinOrganization
+            ? {
+                create: {
+                  organizationId: autoJoinOrganization.id,
+                },
+              }
+            : undefined,
         },
       })
 
