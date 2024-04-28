@@ -8,6 +8,7 @@ import { prisma } from '@/lib/prisma'
 import { createRoute } from '@/utils/create-route'
 import { getUserPermissions } from '@/utils/get-user-permissions'
 
+import { BadRequestError } from '../_errors/bad-request-error'
 import { UnauthorizedError } from '../_errors/unauthorized-error'
 import { MEMBERS_ROUTE_PREFIX, MEMBERS_TAGS } from '.'
 
@@ -54,7 +55,26 @@ export async function membersUpdateMember(app: FastifyInstance) {
           )
         }
 
+        const member = await prisma.member.findFirst({
+          where: {
+            id: memberId,
+            organizationId: organization.id,
+          },
+        })
+
+        if (!member) {
+          throw new BadRequestError('Member not found')
+        }
+
+        if (membership.userId === member.userId) {
+          throw new BadRequestError('You cannot update your own role')
+        }
+
         const { role } = request.body
+
+        if (organization.ownerId === member.userId && role !== 'ADMIN') {
+          throw new BadRequestError('You cannot update the owner role')
+        }
 
         await prisma.member.update({
           where: {

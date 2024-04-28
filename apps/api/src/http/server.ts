@@ -18,6 +18,7 @@ import { authGetProfile } from './routes/auth/get-profile'
 import { authRequestPasswordRecover } from './routes/auth/request-password-recover'
 import { authResetPassword } from './routes/auth/reset-password'
 import { invitesCreateInvite } from './routes/invites/create-invite'
+import { invitesGetInvite } from './routes/invites/get-invite'
 import { membersGetMembers } from './routes/members/get-members'
 import { membersRemoveMember } from './routes/members/remove-member'
 import { membersUpdateMember } from './routes/members/update-member'
@@ -93,6 +94,7 @@ app.register(membersGetMembers)
 app.register(membersUpdateMember)
 app.register(membersRemoveMember)
 
+app.register(invitesGetInvite)
 app.register(invitesCreateInvite)
 
 app.listen({ port: env.SERVER_PORT }).then(() => {
