@@ -8,7 +8,6 @@ import { prisma } from '@/lib/prisma'
 import { createRoute } from '@/utils/create-route'
 import { getUserPermissions } from '@/utils/get-user-permissions'
 
-import { BadRequestError } from '../_errors/bad-request-error'
 import { UnauthorizedError } from '../_errors/unauthorized-error'
 import { INVITES_ROUTE_PREFIX, INVITES_TAGS } from '.'
 
@@ -30,10 +29,28 @@ export async function invitesGetInvites(app: FastifyInstance) {
           params: z.object({
             organizationSlug: z.string(),
           }),
-          response: {},
+          response: {
+            200: z.object({
+              invites: z.array(
+                z.object({
+                  id: z.string().cuid(),
+                  email: z.string().email(),
+                  role: roleSchema,
+                  createdAt: z.date(),
+                  author: z
+                    .object({
+                      id: z.string().cuid(),
+                      name: z.string().nullable(),
+                      avatarUrl: z.string().nullable(),
+                    })
+                    .nullable(),
+                }),
+              ),
+            }),
+          },
         },
       },
-      async (request, reply) => {
+      async (request) => {
         const { organizationSlug } = request.params
         const { membership, organization } =
           await request.getUserMembership(organizationSlug)
@@ -53,10 +70,27 @@ export async function invitesGetInvites(app: FastifyInstance) {
           where: {
             organizationId: organization.id,
           },
+          select: {
+            id: true,
+            email: true,
+            role: true,
+            createdAt: true,
+            author: {
+              select: {
+                id: true,
+                name: true,
+                avatarUrl: true,
+              },
+            },
+          },
           orderBy: {
             createdAt: 'desc',
           },
         })
+
+        return {
+          invites,
+        }
       },
     )
 }
