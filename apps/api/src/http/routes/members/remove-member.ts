@@ -50,6 +50,34 @@ export async function membersRemoveMember(app: FastifyInstance) {
           )
         }
 
+        const members = await prisma.member.findMany({
+          where: {
+            organizationId: organization.id,
+          },
+        })
+
+        if (members.length === 1) {
+          throw new UnauthorizedError(
+            'You cannot remove the last member from an organization',
+          )
+        }
+
+        const member = members.find((m) => m.id === memberId)
+
+        if (!member) {
+          throw new UnauthorizedError('Member not found')
+        }
+
+        if (member.userId === membership.userId) {
+          throw new UnauthorizedError('You cannot remove yourself')
+        }
+
+        if (organization.ownerId === member.userId) {
+          throw new UnauthorizedError(
+            'You cannot remove the organization owner',
+          )
+        }
+
         await prisma.member.delete({
           where: {
             id: memberId,
