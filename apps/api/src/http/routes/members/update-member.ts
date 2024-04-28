@@ -11,11 +11,11 @@ import { getUserPermissions } from '@/utils/get-user-permissions'
 import { UnauthorizedError } from '../_errors/unauthorized-error'
 import { MEMBERS_ROUTE_PREFIX, MEMBERS_TAGS } from '.'
 
-export async function membersGetMembers(app: FastifyInstance) {
+export async function membersUpdateMember(app: FastifyInstance) {
   app
     .withTypeProvider<ZodTypeProvider>()
     .register(auth)
-    .patch(
+    .put(
       createRoute(MEMBERS_ROUTE_PREFIX, ':memberId'),
       {
         schema: {
@@ -28,25 +28,18 @@ export async function membersGetMembers(app: FastifyInstance) {
           ],
           params: z.object({
             organizationSlug: z.string(),
+            memberId: z.string().cuid(),
+          }),
+          body: z.object({
+            role: roleSchema,
           }),
           response: {
-            200: z.object({
-              members: z.array(
-                z.object({
-                  userId: z.string().cuid(),
-                  id: z.string().cuid(),
-                  role: roleSchema,
-                  email: z.string().email(),
-                  name: z.string().nullable(),
-                  avatarUrl: z.string().url().nullable(),
-                }),
-              ),
-            }),
+            204: z.null(),
           },
         },
       },
       async (request, reply) => {
-        const { organizationSlug } = request.params
+        const { organizationSlug, memberId } = request.params
         const { membership, organization } =
           await request.getUserMembership(organizationSlug)
 
@@ -55,42 +48,25 @@ export async function membersGetMembers(app: FastifyInstance) {
           membership.role,
         )
 
-        if (cannot('get', 'User')) {
+        if (cannot('update', 'User')) {
           throw new UnauthorizedError(
-            'You do not have permission to get members of an organization',
+            'You do not have permission to update members of an organization',
           )
         }
 
-        const members = await prisma.member.findMany({
+        const { role } = request.body
+
+        await prisma.member.update({
           where: {
+            id: memberId,
             organizationId: organization.id,
           },
-          select: {
-            id: true,
-            role: true,
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-                avatarUrl: true,
-              },
-            },
-          },
-          orderBy: {
-            role: 'asc',
+          data: {
+            role,
           },
         })
 
-        const membersWithRoles = members.map(
-          ({ user: { id: userId, ...user }, ...member }) => ({
-            ...user,
-            ...member,
-            userId,
-          }),
-        )
-
-        reply.status(200).send({ members: membersWithRoles })
+        reply.status(204).send()
       },
     )
 }
