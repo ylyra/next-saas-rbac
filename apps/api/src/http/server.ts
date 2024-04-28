@@ -25,6 +25,7 @@ import { orgsShutdownOrganization } from './routes/orgs/shutdown-organization'
 import { orgsTransferOrganization } from './routes/orgs/transfer-organization'
 import { orgsUpdateOrganization } from './routes/orgs/update-organization'
 import { projectsCreateProject } from './routes/projects/create-project'
+import { projectsDeleteProject } from './routes/projects/delete-project'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -76,6 +77,7 @@ app.register(orgsShutdownOrganization)
 app.register(orgsTransferOrganization)
 
 app.register(projectsCreateProject)
+app.register(projectsDeleteProject)
 
 app.listen({ port: env.SERVER_PORT }).then(() => {
   console.log('Server is running on http://localhost:3333')
