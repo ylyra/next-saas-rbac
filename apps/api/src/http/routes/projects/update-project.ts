@@ -17,7 +17,7 @@ export async function projectsUpdateeProject(app: FastifyInstance) {
     .withTypeProvider<ZodTypeProvider>()
     .register(auth)
     .put(
-      createRoute(PROJECTS_ROUTE_PREFIX, 'projects', ':projectId'),
+      createRoute(PROJECTS_ROUTE_PREFIX, ':projectId'),
       {
         schema: {
           tags: PROJECTS_TAGS,
@@ -34,7 +34,7 @@ export async function projectsUpdateeProject(app: FastifyInstance) {
           body: z.object({
             name: z.string(),
             description: z.string(),
-            avatarUrl: z.string().nullable(),
+            avatarUrl: z.string().url().nullable(),
           }),
           response: {
             204: z.null(),

@@ -1,3 +1,4 @@
+import { roleSchema } from '@saas/auth'
 import type { FastifyInstance } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import z from 'zod'
@@ -8,18 +9,18 @@ import { createRoute } from '@/utils/create-route'
 import { getUserPermissions } from '@/utils/get-user-permissions'
 
 import { UnauthorizedError } from '../_errors/unauthorized-error'
-import { PROJECTS_ROUTE_PREFIX, PROJECTS_TAGS } from '.'
+import { MEMBERS_ROUTE_PREFIX, MEMBERS_TAGS } from '.'
 
-export async function projectsGetProjects(app: FastifyInstance) {
+export async function membersGetMembers(app: FastifyInstance) {
   app
     .withTypeProvider<ZodTypeProvider>()
     .register(auth)
     .get(
-      createRoute(PROJECTS_ROUTE_PREFIX),
+      createRoute(MEMBERS_ROUTE_PREFIX),
       {
         schema: {
-          tags: PROJECTS_TAGS,
-          summary: 'Get all projects within an organization',
+          tags: MEMBERS_TAGS,
+          summary: 'Get all members of an organization',
           security: [
             {
               bearerAuth: [],
@@ -30,22 +31,14 @@ export async function projectsGetProjects(app: FastifyInstance) {
           }),
           response: {
             200: z.object({
-              projects: z.array(
+              members: z.array(
                 z.object({
+                  userId: z.string().cuid(),
                   id: z.string().cuid(),
-                  name: z.string(),
-                  description: z.string(),
-                  slug: z.string(),
-
-                  ownerId: z.string().cuid(),
-                  organizationId: z.string().cuid(),
-                  createdAt: z.date(),
-
-                  owner: z.object({
-                    id: z.string().cuid(),
-                    name: z.string().nullable(),
-                    avatarUrl: z.string().url().nullable(),
-                  }),
+                  role: roleSchema,
+                  email: z.string().email(),
+                  name: z.string().nullable(),
+                  avatarUrl: z.string().url().nullable(),
                 }),
               ),
             }),
@@ -62,41 +55,42 @@ export async function projectsGetProjects(app: FastifyInstance) {
           membership.role,
         )
 
-        if (cannot('get', 'Project')) {
+        if (cannot('get', 'User')) {
           throw new UnauthorizedError(
-            'You do not have permission to see organization projects',
+            'You do not have permission to get members of an organization',
           )
         }
 
-        const projects = await prisma.project.findMany({
+        const members = await prisma.member.findMany({
           where: {
             organizationId: organization.id,
           },
           select: {
             id: true,
-            name: true,
-            slug: true,
-            ownerId: true,
-            description: true,
-            avatarUrl: true,
-            organizationId: true,
-            createdAt: true,
-            owner: {
+            role: true,
+            user: {
               select: {
                 id: true,
                 name: true,
+                email: true,
                 avatarUrl: true,
               },
             },
           },
           orderBy: {
-            createdAt: 'desc',
+            role: 'asc',
           },
         })
 
-        reply.status(200).send({
-          projects,
-        })
+        const membersWithRoles = members.map(
+          ({ user: { id: userId, ...user }, ...member }) => ({
+            ...user,
+            ...member,
+            userId,
+          }),
+        )
+
+        reply.status(200).send({ members: membersWithRoles })
       },
     )
 }

@@ -15,7 +15,7 @@ export async function projectsGetProject(app: FastifyInstance) {
     .withTypeProvider<ZodTypeProvider>()
     .register(auth)
     .get(
-      createRoute(PROJECTS_ROUTE_PREFIX, 'projects', ':projectSlug'),
+      createRoute(PROJECTS_ROUTE_PREFIX, ':projectSlug'),
       {
         schema: {
           tags: PROJECTS_TAGS,
@@ -36,14 +36,14 @@ export async function projectsGetProject(app: FastifyInstance) {
                 name: z.string(),
                 description: z.string(),
                 slug: z.string(),
-                avatarUrl: z.string().nullable(),
+
                 ownerId: z.string().cuid(),
                 organizationId: z.string().cuid(),
 
                 owner: z.object({
                   id: z.string().cuid(),
                   name: z.string().nullable(),
-                  avatarUrl: z.string().nullable(),
+                  avatarUrl: z.string().url().nullable(),
                 }),
               }),
             }),

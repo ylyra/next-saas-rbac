@@ -16,7 +16,7 @@ export async function projectsCreateProject(app: FastifyInstance) {
     .withTypeProvider<ZodTypeProvider>()
     .register(auth)
     .post(
-      createRoute(PROJECTS_ROUTE_PREFIX, 'projects'),
+      createRoute(PROJECTS_ROUTE_PREFIX),
       {
         schema: {
           tags: PROJECTS_TAGS,
