@@ -22,6 +22,7 @@ import { orgsGetMembership } from './routes/orgs/get-membership'
 import { orgsGetOrganization } from './routes/orgs/get-organization'
 import { orgsGetOrganizations } from './routes/orgs/get-organizations'
 import { orgsShutdownOrganization } from './routes/orgs/shutdown-organization'
+import { orgsTransferOrganization } from './routes/orgs/transfer-organization'
 import { orgsUpdateOrganization } from './routes/orgs/update-organization'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
@@ -65,12 +66,13 @@ app.register(authAuthenticateWithPassword)
 app.register(authRequestPasswordRecover)
 app.register(authResetPassword)
 
-app.register(orgsCreateOrganization)
-app.register(orgsGetMembership)
-app.register(orgsGetOrganization)
 app.register(orgsGetOrganizations)
+app.register(orgsGetOrganization)
+app.register(orgsGetMembership)
+app.register(orgsCreateOrganization)
 app.register(orgsUpdateOrganization)
 app.register(orgsShutdownOrganization)
+app.register(orgsTransferOrganization)
 
 app.listen({ port: env.SERVER_PORT }).then(() => {
   console.log('Server is running on http://localhost:3333')

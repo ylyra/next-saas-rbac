@@ -12,16 +12,16 @@ import { BadRequestError } from '../_errors/bad-request-error'
 import { UnauthorizedError } from '../_errors/unauthorized-error'
 import { ORGANIZATIONS_ROUTE_PREFIX, ORGANIZATIONS_TAGS } from '.'
 
-export async function orgsUpdateOrganization(app: FastifyInstance) {
+export async function orgsTransferOrganization(app: FastifyInstance) {
   app
     .withTypeProvider<ZodTypeProvider>()
     .register(auth)
-    .put(
-      createRoute(ORGANIZATIONS_ROUTE_PREFIX, ':organizationSlug'),
+    .patch(
+      createRoute(ORGANIZATIONS_ROUTE_PREFIX, ':organizationSlug', 'transfer'),
       {
         schema: {
           tags: ORGANIZATIONS_TAGS,
-          summary: 'Update organization',
+          summary: 'Transfer organization ownership',
           security: [
             {
               bearerAuth: [],
@@ -31,18 +31,10 @@ export async function orgsUpdateOrganization(app: FastifyInstance) {
             organizationSlug: z.string(),
           }),
           body: z.object({
-            name: z.string(),
-            domain: z.string().nullish(),
-            shouldAttachUsersByDomain: z.boolean(),
+            transferToUserId: z.string().cuid(),
           }),
           response: {
             204: z.null,
-            400: z.object({
-              message: z.string(),
-            }),
-            401: z.object({
-              message: z.string(),
-            }),
           },
         },
       },
@@ -52,44 +44,52 @@ export async function orgsUpdateOrganization(app: FastifyInstance) {
         const { membership, organization } =
           await request.getUserMembership(organizationSlug)
 
-        const { name, domain, shouldAttachUsersByDomain } = request.body
-
         const authOrganization = organizationSchema.parse(organization)
         const { cannot } = getUserPermissions(userId, membership.role)
 
-        if (cannot('update', authOrganization)) {
+        if (cannot('transfer_ownership', authOrganization)) {
           throw new UnauthorizedError(
-            'You do not have permission to update this organization',
+            'You do not have permission to transfer organization ownership',
           )
         }
 
-        if (domain) {
-          const organizationByDomain = await prisma.organization.findFirst({
-            where: {
-              domain,
-              id: {
-                not: organization.id,
-              },
-            },
-          })
+        const { transferToUserId } = request.body
 
-          if (organizationByDomain) {
-            throw new BadRequestError(
-              'Another organization with the same domain already exists',
-            )
-          }
-        }
-
-        await prisma.organization.update({
+        const transferToMembership = await prisma.member.findUnique({
           where: {
-            id: organization.id,
-          },
-          data: {
-            name,
-            domain,
-            shouldAttachUsersByDomain,
+            organizationId_userId: {
+              organizationId: organization.id,
+              userId: transferToUserId,
+            },
           },
         })
+
+        if (!transferToMembership) {
+          throw new BadRequestError('User is not a member of the organization')
+        }
+
+        await prisma.$transaction([
+          prisma.member.update({
+            where: {
+              organizationId_userId: {
+                organizationId: organization.id,
+                userId,
+              },
+            },
+            data: {
+              role: 'ADMIN',
+            },
+          }),
+
+          prisma.organization.update({
+            where: {
+              id: organization.id,
+            },
+            data: {
+              ownerId: transferToUserId,
+            },
+          }),
+        ])
 
         reply.status(204).send()
       },

@@ -24,9 +24,6 @@ export async function orgsGetOrganizations(app: FastifyInstance) {
               bearerAuth: [],
             },
           ],
-          params: z.object({
-            organizationSlug: z.string(),
-          }),
           response: {
             200: z.object({
               organizations: z.array(
