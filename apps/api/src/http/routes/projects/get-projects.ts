@@ -10,16 +10,16 @@ import { getUserPermissions } from '@/utils/get-user-permissions'
 import { UnauthorizedError } from '../_errors/unauthorized-error'
 import { PROJECTS_ROUTE_PREFIX, PROJECTS_TAGS } from '.'
 
-export async function projectsGetProject(app: FastifyInstance) {
+export async function projectsGetProjects(app: FastifyInstance) {
   app
     .withTypeProvider<ZodTypeProvider>()
     .register(auth)
     .get(
-      createRoute(PROJECTS_ROUTE_PREFIX, 'projects', ':projectSlug'),
+      createRoute(PROJECTS_ROUTE_PREFIX, 'projects'),
       {
         schema: {
           tags: PROJECTS_TAGS,
-          summary: 'Get a project within an organization',
+          summary: 'Get all projects within an organization',
           security: [
             {
               bearerAuth: [],
@@ -27,25 +27,27 @@ export async function projectsGetProject(app: FastifyInstance) {
           ],
           params: z.object({
             organizationSlug: z.string(),
-            projectSlug: z.string(),
           }),
           response: {
             200: z.object({
-              project: z.object({
-                id: z.string().cuid(),
-                name: z.string(),
-                description: z.string(),
-                slug: z.string(),
-                avatarUrl: z.string().nullable(),
-                ownerId: z.string().cuid(),
-                organizationId: z.string().cuid(),
-
-                owner: z.object({
+              projects: z.array(
+                z.object({
                   id: z.string().cuid(),
-                  name: z.string().nullable(),
+                  name: z.string(),
+                  description: z.string(),
+                  slug: z.string(),
                   avatarUrl: z.string().nullable(),
+                  ownerId: z.string().cuid(),
+                  organizationId: z.string().cuid(),
+                  createdAt: z.date(),
+
+                  owner: z.object({
+                    id: z.string().cuid(),
+                    name: z.string().nullable(),
+                    avatarUrl: z.string().nullable(),
+                  }),
                 }),
-              }),
+              ),
             }),
           },
         },
@@ -62,14 +64,13 @@ export async function projectsGetProject(app: FastifyInstance) {
 
         if (cannot('get', 'Project')) {
           throw new UnauthorizedError(
-            'You do not have permission to see this project',
+            'You do not have permission to see organization projects',
           )
         }
 
-        const project = await prisma.project.findFirst({
+        const projects = await prisma.project.findMany({
           where: {
             organizationId: organization.id,
-            slug: request.params.projectSlug,
           },
           select: {
             id: true,
@@ -79,6 +80,7 @@ export async function projectsGetProject(app: FastifyInstance) {
             description: true,
             avatarUrl: true,
             organizationId: true,
+            createdAt: true,
             owner: {
               select: {
                 id: true,
@@ -87,14 +89,13 @@ export async function projectsGetProject(app: FastifyInstance) {
               },
             },
           },
+          orderBy: {
+            createdAt: 'desc',
+          },
         })
 
-        if (!project) {
-          throw new UnauthorizedError('Project not found')
-        }
-
         reply.status(200).send({
-          project,
+          projects,
         })
       },
     )
