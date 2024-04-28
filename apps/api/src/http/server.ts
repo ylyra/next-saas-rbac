@@ -17,7 +17,9 @@ import { authCreateAccount } from './routes/auth/create-account'
 import { authGetProfile } from './routes/auth/get-profile'
 import { authRequestPasswordRecover } from './routes/auth/request-password-recover'
 import { authResetPassword } from './routes/auth/reset-password'
+import { invitesCreateInvite } from './routes/invites/create-invite'
 import { membersGetMembers } from './routes/members/get-members'
+import { membersRemoveMember } from './routes/members/remove-member'
 import { membersUpdateMember } from './routes/members/update-member'
 import { orgsCreateOrganization } from './routes/orgs/create-organization'
 import { orgsGetMembership } from './routes/orgs/get-membership'
@@ -89,6 +91,9 @@ app.register(projectsDeleteProject)
 
 app.register(membersGetMembers)
 app.register(membersUpdateMember)
+app.register(membersRemoveMember)
+
+app.register(invitesCreateInvite)
 
 app.listen({ port: env.SERVER_PORT }).then(() => {
   console.log('Server is running on http://localhost:3333')
