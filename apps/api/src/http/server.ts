@@ -22,6 +22,7 @@ import { invitesCreateInvite } from './routes/invites/create-invite'
 import { invitesGetInvite } from './routes/invites/get-invite'
 import { invitesGetInvites } from './routes/invites/get-invites'
 import { invitesRejectInvite } from './routes/invites/reject-invite'
+import { invitesRevokeInvite } from './routes/invites/revoke-invite'
 import { membersGetMembers } from './routes/members/get-members'
 import { membersRemoveMember } from './routes/members/remove-member'
 import { membersUpdateMember } from './routes/members/update-member'
@@ -102,6 +103,7 @@ app.register(invitesGetInvites)
 app.register(invitesCreateInvite)
 app.register(invitesAcceptInvite)
 app.register(invitesRejectInvite)
+app.register(invitesRevokeInvite)
 
 app.listen({ port: env.SERVER_PORT }).then(() => {
   console.log('Server is running on http://localhost:3333')
