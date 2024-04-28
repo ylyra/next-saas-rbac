@@ -1,5 +1,5 @@
 import { MongoAbility } from '@casl/ability'
-import { z } from 'zod'
+import z from 'zod'
 
 import { billingSubject } from './billing'
 import { inviteSubject } from './invite'

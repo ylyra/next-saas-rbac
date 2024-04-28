@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import z from 'zod'
 
 export const roleSchema = z.enum(['ADMIN', 'MEMBER', 'BILLING'])
 

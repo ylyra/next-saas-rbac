@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import z from 'zod'
 
 export const billingSubject = z.tuple([
   z.enum(['manage', 'get', 'export']),
