@@ -6,13 +6,13 @@ interface FormState {
   errors: Record<string, string[]> | null
 }
 
-export function useFormState(
-  action: (data: FormData) => Promise<FormState>,
-  initialState?: FormState,
+export function useFormState<TFormState extends FormState>(
+  action: (data: FormData) => Promise<TFormState>,
+  initialState?: TFormState,
   onSucess?: () => void | Promise<void>,
 ) {
   const [isPending, startTransition] = useTransition()
-  const [state, setState] = useState<FormState>(
+  const [state, setState] = useState(
     initialState ?? {
       success: false,
       message: null,
