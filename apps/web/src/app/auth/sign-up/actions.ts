@@ -5,7 +5,7 @@ import z from 'zod'
 
 import { signUpWithPassword } from '@/http/sign-up-with-password'
 
-const signInSchema = z
+const signUpSchema = z
   .object({
     name: z
       .string()
@@ -32,7 +32,7 @@ const signInSchema = z
   })
 
 export async function signUpWithEmailAndPassword(data: FormData) {
-  const result = signInSchema.safeParse(Object.fromEntries(data))
+  const result = signUpSchema.safeParse(Object.fromEntries(data))
 
   if (!result.success) {
     return {
@@ -60,11 +60,17 @@ export async function signUpWithEmailAndPassword(data: FormData) {
         errors: null,
       }
     }
+
+    return {
+      success: false,
+      message: 'An unexpected error occurred. Please try again later.',
+      errors: null,
+    }
   }
 
   return {
-    success: false,
-    message: 'An unexpected error occurred. Please try again later.',
+    success: true,
+    message: null,
     errors: null,
   }
 }

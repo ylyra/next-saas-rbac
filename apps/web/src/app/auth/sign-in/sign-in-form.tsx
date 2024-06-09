@@ -32,7 +32,9 @@ export function SignInForm() {
         {!state?.success && state?.message && (
           <Alert variant="destructive">
             <AlertTriangle className="size-4" />
-            <AlertTitle>Sign in failed!</AlertTitle>
+            <AlertTitle>
+              Sign in failed. Please check the form and try again.
+            </AlertTitle>
             <AlertDescription>
               <p>{state.message}</p>
             </AlertDescription>

@@ -30,7 +30,9 @@ function Organization({
         {organization.avatarUrl && (
           <AvatarImage src={organization.avatarUrl} alt="" />
         )}
-        <AvatarFallback>{getInitials(organization.name)}</AvatarFallback>
+        <AvatarFallback className="text-[8px]">
+          {getInitials(organization.name)}
+        </AvatarFallback>
       </Avatar>
       <span className="truncate">{organization.name}</span>
     </>

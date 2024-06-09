@@ -54,4 +54,10 @@ export async function signInWithEmailAndPassword(data: FormData) {
       errors: null,
     }
   }
+
+  return {
+    success: true,
+    message: null,
+    errors: null,
+  }
 }

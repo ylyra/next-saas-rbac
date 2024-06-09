@@ -85,20 +85,20 @@ export async function billingGetOrganizationBilling(app: FastifyInstance) {
         ])
 
         const totalPriceAmountOfSeats =
-          amountOfMembersForOrganization * env.SEAT_UNIT_PRICE
+          amountOfMembersForOrganization * env.NEXT_PUBLIC_SEAT_UNIT_PRICE
         const totalPriceAmountOfProjects =
-          amountOfProjectsForOrganization * env.PROJECT_UNIT_PRICE
+          amountOfProjectsForOrganization * env.NEXT_PUBLIC_PROJECT_UNIT_PRICE
 
         return {
           billing: {
             seats: {
               amount: amountOfMembersForOrganization ?? 0,
-              unite: env.SEAT_UNIT_PRICE,
+              unite: env.NEXT_PUBLIC_SEAT_UNIT_PRICE,
               price: totalPriceAmountOfSeats,
             },
             projects: {
               amount: amountOfProjectsForOrganization ?? 0,
-              unite: env.PROJECT_UNIT_PRICE,
+              unite: env.NEXT_PUBLIC_PROJECT_UNIT_PRICE,
               price: totalPriceAmountOfProjects,
             },
             total: totalPriceAmountOfSeats + totalPriceAmountOfProjects,

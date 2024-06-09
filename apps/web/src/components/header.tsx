@@ -1,5 +1,6 @@
 import { Slash } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 import rocketseatIcon from '@/assets/svgs/rocketseat-icon.svg'
 import { ability } from '@/auth/auth'
@@ -13,9 +14,12 @@ export async function Header() {
   const permissions = await ability()
 
   return (
-    <div className="mx-auto flex max-w-[1200px] items-center justify-between">
+    <div className="container flex items-center justify-between border-b pb-2">
       <div className="flex items-center gap-3">
-        <Image src={rocketseatIcon} alt="" className="size-6 dark:invert" />
+        <Link href="/">
+          <Image src={rocketseatIcon} alt="" className="size-6 dark:invert" />
+          <span className="sr-only">Go to Home</span>
+        </Link>
 
         <Slash className="size-3 -rotate-[24deg] text-border" />
 
