@@ -1,12 +1,24 @@
 import { redirect } from 'next/navigation'
-import type { PropsWithChildren } from 'react'
+import type { PropsWithChildren, ReactNode } from 'react'
 
 import { isAuthenticated } from '@/auth/auth'
 
-export default function Template({ children }: PropsWithChildren) {
+type Props = {
+  sheet: ReactNode
+}
+
+export default function Template({
+  children,
+  sheet,
+}: PropsWithChildren<Props>) {
   if (!isAuthenticated()) {
     redirect('/auth/sign-in')
   }
 
-  return <>{children}</>
+  return (
+    <>
+      {children}
+      {sheet}
+    </>
+  )
 }
