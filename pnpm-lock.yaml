@@ -102,6 +102,9 @@ importers:
       '@radix-ui/react-slot':
         specifier: ^1.0.2
         version: 1.0.2(react@19.0.0-rc-f994737d14-20240522)(types-react@19.0.0-rc.0)
+      '@saas/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0

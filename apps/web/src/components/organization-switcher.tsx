@@ -1,7 +1,7 @@
 import { ChevronsUpDown, PlusCircle } from 'lucide-react'
-import { cookies } from 'next/headers'
 import Link from 'next/link'
 
+import { getCurrentOrg } from '@/auth/auth'
 import { getOrganizations } from '@/http/get-organizationts'
 import { getInitials } from '@/utils/get-initials'
 
@@ -38,8 +38,7 @@ function Organization({
 }
 
 export async function OrganizationSwitcher() {
-  const cookieStore = cookies()
-  const currentOrg = cookieStore.get('@saas:org')?.value
+  const currentOrg = getCurrentOrg()
   const { organizations } = await getOrganizations()
 
   const currentOrganization = organizations.find(
