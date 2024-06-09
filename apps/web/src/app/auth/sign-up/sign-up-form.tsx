@@ -44,7 +44,7 @@ export default function SignUpForm() {
           <Input id="name" name="name" required autoFocus />
 
           {state.errors?.name && (
-            <p className="text-destructive text-xs">{state.errors.name[0]}</p>
+            <p className="text-xs text-destructive">{state.errors.name[0]}</p>
           )}
         </div>
 
@@ -53,7 +53,7 @@ export default function SignUpForm() {
           <Input id="email" type="email" name="email" required />
 
           {state.errors?.email && (
-            <p className="text-destructive text-xs">{state.errors.email[0]}</p>
+            <p className="text-xs text-destructive">{state.errors.email[0]}</p>
           )}
         </div>
 
@@ -62,7 +62,7 @@ export default function SignUpForm() {
           <Input id="password" type="password" name="password" required />
 
           {state.errors?.password && (
-            <p className="text-destructive text-xs">
+            <p className="text-xs text-destructive">
               {state.errors.password[0]}
             </p>
           )}
@@ -78,7 +78,7 @@ export default function SignUpForm() {
           />
 
           {state.errors?.confirm_password && (
-            <p className="text-destructive text-xs">
+            <p className="text-xs text-destructive">
               {state.errors.confirm_password[0]}
             </p>
           )}

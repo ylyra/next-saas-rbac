@@ -44,7 +44,7 @@ export function SignInForm() {
           <Input id="email" type="email" name="email" required autoFocus />
 
           {state.errors?.email && (
-            <p className="text-destructive text-xs">{state.errors.email[0]}</p>
+            <p className="text-xs text-destructive">{state.errors.email[0]}</p>
           )}
         </div>
 
@@ -53,7 +53,7 @@ export function SignInForm() {
           <Input id="password" type="password" name="password" required />
 
           {state.errors?.password && (
-            <p className="text-destructive text-xs">
+            <p className="text-xs text-destructive">
               {state.errors.password[0]}
             </p>
           )}
