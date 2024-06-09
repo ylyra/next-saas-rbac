@@ -29,8 +29,8 @@ export async function seed() {
   const [user, anotherUser, anotherUser2] = await Promise.all([
     prisma.user.create({
       data: {
-        email: 'john@doe.com',
-        name: 'John Doe',
+        email: 'yan@acme.com',
+        name: 'Yan Lyra',
         avatarUrl: 'https://github.com/ylyra.png',
         passwordHash,
       },
