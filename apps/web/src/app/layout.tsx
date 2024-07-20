@@ -2,9 +2,9 @@ import './globals.css'
 
 import type { Metadata } from 'next'
 import { Inter as FontSans } from 'next/font/google'
-import { ThemeProvider } from 'next-themes'
 
 import { cn } from '@/lib/utils'
+import { Providers } from '@/providers'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -28,9 +28,7 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        <ThemeProvider enableSystem disableTransitionOnChange attribute="class">
-          {children}
-        </ThemeProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

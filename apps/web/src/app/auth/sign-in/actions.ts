@@ -35,7 +35,6 @@ export async function signInWithEmailAndPassword(data: FormData) {
     cookieStore.set('@saas:token', token, {
       maxAge: 60 * 60 * 24 * 7, // 1 week
       path: '/',
-      httpOnly: true,
     })
   } catch (error) {
     if (error instanceof HTTPError) {
