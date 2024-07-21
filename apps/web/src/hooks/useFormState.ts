@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { type FormEvent, useState, useTransition } from 'react'
 
 interface FormState {
+  data?: Record<string, any>
   success: boolean
   message: string | null
   errors: Record<string, string[]> | null
@@ -9,7 +11,7 @@ interface FormState {
 export function useFormState<TFormState extends FormState>(
   action: (data: FormData) => Promise<TFormState>,
   initialState?: TFormState,
-  onSucess?: () => void | Promise<void>,
+  onSucess?: (response?: TFormState['data']) => void | Promise<void>,
 ) {
   const [isPending, startTransition] = useTransition()
   const [state, setState] = useState(
@@ -30,7 +32,7 @@ export function useFormState<TFormState extends FormState>(
       const result = await action(data)
 
       if (onSucess && result.success) {
-        await onSucess()
+        await onSucess(result.data)
       }
 
       setState(result)

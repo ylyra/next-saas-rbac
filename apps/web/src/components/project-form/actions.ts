@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server'
 
 import { HTTPError } from 'ky'
@@ -30,11 +31,18 @@ export async function createProjectAction(data: FormData) {
       throw new Error('No project found.')
     }
 
-    await createProject({
+    const response = await createProject({
       org,
       name,
       description,
     })
+
+    return {
+      success: true,
+      message: 'Successfully saved project.',
+      errors: null,
+      data: response,
+    }
   } catch (error) {
     if (error instanceof HTTPError) {
       const { message } = await error.response.json()
@@ -45,17 +53,11 @@ export async function createProjectAction(data: FormData) {
         errors: null,
       }
     }
-
-    return {
-      success: false,
-      message: 'An unexpected error occurred. Please try again later.',
-      errors: null,
-    }
   }
 
   return {
-    success: true,
-    message: 'Successfully saved project.',
+    success: false,
+    message: 'An unexpected error occurred. Please try again later.',
     errors: null,
   }
 }

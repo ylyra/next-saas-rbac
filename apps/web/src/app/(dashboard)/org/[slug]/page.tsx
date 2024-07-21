@@ -5,7 +5,7 @@ export default function Page() {
     <div className="space-y-4 py-4">
       <Header />
 
-      <main className="container"></main>
+      <main className="container">Projects</main>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { AlertTriangle, Loader } from 'lucide-react'
+import { useParams, useRouter } from 'next/navigation'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -12,9 +13,20 @@ import { useFormState } from '@/hooks/useFormState'
 import { createProjectAction } from './actions'
 
 export default function ProjectForm() {
+  const router = useRouter()
+  const params = useParams<{
+    slug: string
+  }>()
   const [state, formAction, isPending] = useFormState(
     createProjectAction,
     undefined,
+    (response) => {
+      if (!params.slug || !response) {
+        return
+      }
+
+      router.push(`/org/${params.slug}/project/${response.slug}`)
+    },
   )
 
   return (
