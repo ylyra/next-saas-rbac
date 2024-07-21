@@ -11,7 +11,11 @@ interface GetOrganizationsResponse {
 
 export async function getOrganizations(): Promise<GetOrganizationsResponse> {
   const result = await api
-    .get('organizations')
+    .get('organizations', {
+      next: {
+        tags: ['organizations'],
+      },
+    })
     .json<GetOrganizationsResponse>()
     .catch((error) => {
       console.error(error)

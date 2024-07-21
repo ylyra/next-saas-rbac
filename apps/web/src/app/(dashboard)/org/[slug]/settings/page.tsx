@@ -9,12 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { getOrganization } from '@/http/get-organization'
 
 import { ShutdownOrganizationButton } from './shutdown-organization-button'
 
 type Props = {
   params: {
-    org: string
+    slug: string
   }
 }
 
@@ -25,8 +26,10 @@ export default async function Page({ params }: Props) {
   const canShutdownOrg = permissions?.can('delete', 'Organization')
 
   if (!canUpdateOrg && !canGetBilling) {
-    redirect(`/org/${params.org}`)
+    redirect(`/org/${params.slug}`)
   }
+
+  const { organization } = await getOrganization(params.slug)
 
   return (
     <div className="space-y-4">
@@ -43,7 +46,7 @@ export default async function Page({ params }: Props) {
             </CardHeader>
 
             <CardContent>
-              <OrganizationForm />
+              <OrganizationForm initialData={organization} />
             </CardContent>
           </Card>
         )}
