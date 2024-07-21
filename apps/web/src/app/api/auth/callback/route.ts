@@ -1,9 +1,11 @@
 import { HTTPError } from 'ky'
 import { cookies } from 'next/headers'
 
+import { acceptInvite } from '@/http/accept-invite'
 import { signInWithGithub } from '@/http/sign-in-with-github'
 
 export async function GET(request: Request) {
+  const cookieStore = cookies()
   const url = new URL(request.url)
   const code = url.searchParams.get('code')
 
@@ -23,8 +25,6 @@ export async function GET(request: Request) {
       code,
     })
 
-    const cookieStore = cookies()
-
     cookieStore.set('@saas:token', token, {
       maxAge: 60 * 60 * 24 * 7, // 1 week
       path: '/',
@@ -41,6 +41,15 @@ export async function GET(request: Request) {
     return Response.json({
       error: 'An unexpected error occurred. Please try again later.',
     })
+  }
+
+  const inviteId = cookieStore.get('inviteId')?.value
+
+  if (inviteId) {
+    try {
+      await acceptInvite(inviteId)
+      cookieStore.delete('inviteId')
+    } catch (error) {}
   }
 
   const newUrl = new URL('/', url)
