@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { type FormEvent, useState, useTransition } from 'react'
+import { requestFormReset } from 'react-dom'
 
 interface FormState {
   data?: Record<string, any>
@@ -30,6 +31,10 @@ export function useFormState<TFormState extends FormState>(
 
     startTransition(async () => {
       const result = await action(data)
+
+      if (result.success) {
+        requestFormReset(form)
+      }
 
       if (onSucess && result.success) {
         await onSucess(result.data)
