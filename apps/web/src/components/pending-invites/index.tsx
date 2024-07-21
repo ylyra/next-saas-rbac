@@ -16,7 +16,7 @@ dayjs.extend(relativeTime)
 
 export function PendingInvites() {
   const [isOpen, setIsOpen] = useState(false)
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['pending-invites'],
     queryFn: getPendingInvites,
     enabled: isOpen,
@@ -50,6 +50,10 @@ export function PendingInvites() {
         <span className="block text-sm font-medium">
           Pending invites ({data?.invites.length ?? 0})
         </span>
+
+        {!isLoading && data?.invites.length === 0 && (
+          <p className="text-sm text-muted-foreground">No pending invites.</p>
+        )}
 
         {data?.invites.map((invite) => (
           <div className="space-y-2" key={invite.id}>
