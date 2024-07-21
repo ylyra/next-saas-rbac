@@ -5,7 +5,7 @@ import ProjectForm from '@/components/project-form'
 
 type Props = {
   params: {
-    org: string
+    slug: string
   }
 }
 
@@ -13,7 +13,7 @@ export default async function Page({ params }: Props) {
   const permissions = await ability()
 
   if (permissions?.cannot('create', 'Project')) {
-    redirect(`/org/${params.org}`)
+    redirect(`/org/${params.slug}`)
   }
 
   return (

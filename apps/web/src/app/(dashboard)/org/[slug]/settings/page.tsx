@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/card'
 import { getOrganization } from '@/http/get-organization'
 
+import { Billing } from './billing'
 import { ShutdownOrganizationButton } from './shutdown-organization-button'
 
 type Props = {
@@ -51,18 +52,7 @@ export default async function Page({ params }: Props) {
           </Card>
         )}
 
-        {canGetBilling && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Billing</CardTitle>
-              <CardDescription>Manage your billing settings.</CardDescription>
-            </CardHeader>
-
-            <CardContent>
-              <p>Coming soon...</p>
-            </CardContent>
-          </Card>
-        )}
+        {canGetBilling && <Billing />}
 
         {canShutdownOrg && (
           <Card>
