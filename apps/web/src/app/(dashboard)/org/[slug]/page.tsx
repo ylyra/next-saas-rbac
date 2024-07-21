@@ -1,11 +1,7 @@
-import { Header } from '@/components/header'
-
 export default function Page() {
   return (
-    <div className="space-y-4 py-4">
-      <Header />
-
-      <main className="container">Projects</main>
+    <div className="space-y-4">
+      <h1 className="text-2xl font-bold">Projects</h1>
     </div>
   )
 }

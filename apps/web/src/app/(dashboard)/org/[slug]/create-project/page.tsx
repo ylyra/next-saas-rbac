@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 
 import { ability } from '@/auth/auth'
-import { Header } from '@/components/header'
 import ProjectForm from '@/components/project-form'
 
 type Props = {
@@ -18,14 +17,10 @@ export default async function Page({ params }: Props) {
   }
 
   return (
-    <div className="space-y-4 py-4">
-      <Header />
+    <div className="space-y-4">
+      <h1 className="text-2xl font-bold">Create Project</h1>
 
-      <main className="container space-y-4">
-        <h1 className="text-2xl font-bold">Create Project</h1>
-
-        <ProjectForm />
-      </main>
+      <ProjectForm />
     </div>
   )
 }

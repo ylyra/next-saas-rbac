@@ -15,7 +15,7 @@ export async function Header() {
   const permissions = await ability()
 
   return (
-    <div className="container flex items-center justify-between border-b pb-2">
+    <div className="container flex items-center justify-between">
       <div className="flex items-center gap-3">
         <Link href="/">
           <Image src={rocketseatIcon} alt="" className="size-6 dark:invert" />
